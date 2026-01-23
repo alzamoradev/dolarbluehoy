@@ -210,8 +210,23 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
     return [...dynamic, ...statics];
   }, [rates]);
 
+  // Generate H1 with all dollar types
+  const h1Text = useMemo(() => {
+    const blueRate = rates.find(r => r.casa === 'blue');
+    const oficialRate = rates.find(r => r.casa === 'oficial');
+    const mepRate = rates.find(r => r.casa === 'bolsa');
+    
+    if (blueRate && oficialRate && mepRate) {
+      return `Dólar Blue $${blueRate.venta} | Oficial $${oficialRate.venta} | MEP $${mepRate.venta} - Cotización Hoy`;
+    }
+    return 'Cotización Dólar Blue, Oficial, MEP, CCL y Cripto Hoy Argentina';
+  }, [rates]);
+
   return (
     <div className="min-h-screen flex flex-col font-sans select-none overflow-hidden text-sm">
+      {/* SEO H1 - Visually hidden but accessible */}
+      <h1 className="sr-only">{h1Text}</h1>
+      
       {/* Desktop Area */}
       <main className="flex-1 p-4 relative flex flex-col md:flex-row gap-6 overflow-y-auto pb-16" id="cotizaciones">
         
