@@ -70,9 +70,9 @@ export const DollarCard: React.FC<Props> = ({ rate }) => {
       </div>
       <Win98Panel className="bg-white flex justify-between items-center px-2 py-2">
         {isTarjeta ? (
-          // Tarjeta: Solo venta (no se puede comprar)
+          // Tarjeta: Solo valor de referencia
           <div className="text-center w-full px-1">
-            <div className="text-[10px] text-gray-500 font-retro uppercase tracking-tighter">Venta (no se puede comprar)</div>
+            <div className="text-[10px] text-gray-500 font-retro uppercase tracking-tighter">Valor de referencia</div>
             <div className="text-xl font-bold font-retro text-win-blue leading-none">{formatCurrency(rate.venta)}</div>
           </div>
         ) : (
