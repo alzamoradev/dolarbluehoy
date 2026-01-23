@@ -9,7 +9,6 @@ import { DollarCard, getDollarDisplayName } from '@/components/DollarCard';
 import { HistoryChart } from '@/components/HistoryChart';
 import { Calculator } from '@/components/Calculator';
 import { Minesweeper } from '@/components/Minesweeper';
-import { Solitaire } from '@/components/Solitaire';
 import { analyzeMarket } from '@/services/geminiService';
 
 // --- SVG Icons ---
@@ -126,7 +125,6 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
   const [cyberAlertOpen, setCyberAlertOpen] = useState(false);
   const [faqOpen, setFaqOpen] = useState(false);
   const [minesweeperOpen, setMinesweeperOpen] = useState(false);
-  const [solitaireOpen, setSolitaireOpen] = useState(false);
   
   // Clock state
   const [time, setTime] = useState(new Date());
@@ -263,16 +261,6 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
         <span className="bg-win-teal text-xs px-1 group-hover:bg-blue-900 group-hover:border-dotted group-hover:border-white border border-transparent font-retro tracking-wide">Buscaminas</span>
       </button>
 
-      <button onClick={() => setSolitaireOpen(true)} className="flex flex-col items-center gap-1 group cursor-pointer text-shadow">
-        <ImageWithFallback 
-          src="/icons/solitario.png" 
-          alt="Solitario" 
-          fallback={<span className="text-2xl">🃏</span>}
-          className="w-10 h-10 object-contain drop-shadow-md" 
-        />
-        <span className="bg-win-teal text-xs px-1 group-hover:bg-blue-900 group-hover:border-dotted group-hover:border-white border border-transparent font-retro tracking-wide">Solitario</span>
-      </button>
-
       {/* Decorative Games (show cyber alert) */}
       <button onClick={() => setCyberAlertOpen(true)} className="flex flex-col items-center gap-1 group cursor-pointer text-shadow">
         <ImageWithFallback 
@@ -407,46 +395,50 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
 
         {/* FAQ Window */}
         {faqOpen && (
-          <Win98Window
-            title="Preguntas Frecuentes sobre el Dólar"
-            className="absolute top-10 left-10 md:left-1/2 w-full max-w-lg z-50 h-3/4"
-            onClose={() => setFaqOpen(false)}
-          >
-            <div className="bg-white p-4 h-full overflow-y-auto text-black font-retro text-sm">
-              <div className="flex flex-col gap-4">
-                {faqItems.map((item, idx) => (
-                  <div key={idx} className="pb-2">
-                    <h3 className="font-bold text-blue-800 mb-1 font-retro">❓ {item.q}</h3>
-                    <p className="text-gray-800 pl-4 bg-gray-50 p-2 border-l-4 border-win-teal font-retro">{item.a}</p>
-                  </div>
-                ))}
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-sm p-4">
+            <Win98Window
+              title="Preguntas Frecuentes sobre el Dólar"
+              className="w-full max-w-lg max-h-[80vh] shadow-2xl"
+              onClose={() => setFaqOpen(false)}
+            >
+              <div className="bg-white p-4 h-full overflow-y-auto text-black font-retro text-sm max-h-[60vh]">
+                <div className="flex flex-col gap-4">
+                  {faqItems.map((item, idx) => (
+                    <div key={idx} className="pb-2">
+                      <h3 className="font-bold text-blue-800 mb-1 font-retro">❓ {item.q}</h3>
+                      <p className="text-gray-800 pl-4 bg-gray-50 p-2 border-l-4 border-win-teal font-retro">{item.a}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 flex justify-end">
+                  <Win98Button onClick={() => setFaqOpen(false)}>Cerrar</Win98Button>
+                </div>
               </div>
-              <div className="mt-4 flex justify-end">
-                <Win98Button onClick={() => setFaqOpen(false)}>Cerrar</Win98Button>
-              </div>
-            </div>
-          </Win98Window>
+            </Win98Window>
+          </div>
         )}
 
         {/* History Window */}
         {historyOpen && (
-          <Win98Window 
-            title="Gráfico Histórico del Dólar Blue" 
-            className="absolute top-10 left-10 md:left-1/3 w-96 z-50"
-            onClose={() => setHistoryOpen(false)}
-          >
-            <div className="p-2 bg-win-gray flex flex-col items-center">
-              <HistoryChart data={historicalData} />
-              <div className="mt-2 w-full flex justify-end">
-                <Win98Button onClick={() => setHistoryOpen(false)}>Cerrar</Win98Button>
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-sm p-4">
+            <Win98Window 
+              title="Gráfico Histórico del Dólar Blue" 
+              className="w-full max-w-md shadow-2xl"
+              onClose={() => setHistoryOpen(false)}
+            >
+              <div className="p-2 bg-win-gray flex flex-col items-center">
+                <HistoryChart data={historicalData} />
+                <div className="mt-2 w-full flex justify-end">
+                  <Win98Button onClick={() => setHistoryOpen(false)}>Cerrar</Win98Button>
+                </div>
               </div>
-            </div>
-          </Win98Window>
+            </Win98Window>
+          </div>
         )}
 
         {/* Cyber Alert */}
         {cyberAlertOpen && (
-          <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-sm">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-sm">
             <Win98Window 
               title="Control de CiberCafé - Server" 
               className="w-96 shadow-2xl"
@@ -478,26 +470,13 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
 
         {/* Minesweeper Game Window */}
         {minesweeperOpen && (
-          <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-sm">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-sm">
             <Win98Window 
               title="Buscaminas" 
               className="shadow-2xl"
               onClose={() => setMinesweeperOpen(false)}
             >
               <Minesweeper />
-            </Win98Window>
-          </div>
-        )}
-
-        {/* Solitaire Game Window */}
-        {solitaireOpen && (
-          <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-sm overflow-auto py-4">
-            <Win98Window 
-              title="Solitario" 
-              className="shadow-2xl max-h-[90vh] overflow-auto"
-              onClose={() => setSolitaireOpen(false)}
-            >
-              <Solitaire />
             </Win98Window>
           </div>
         )}
