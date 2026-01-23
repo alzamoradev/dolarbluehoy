@@ -11,8 +11,8 @@ const argentinaDataMap: Record<string, string> = {
   'mayorista': 'mayorista',
 };
 
-// Fetch yesterday's rate for a specific dollar type
-async function fetchYesterdayRate(casa: string): Promise<number | null> {
+// Fetch rate from ~24 hours ago for a specific dollar type
+async function fetch24hAgoRate(casa: string): Promise<number | null> {
   const endpoint = argentinaDataMap[casa];
   if (!endpoint) return null;
   
@@ -27,14 +27,20 @@ async function fetchYesterdayRate(casa: string): Promise<number | null> {
     const data = await response.json();
     if (!data || data.length < 2) return null;
     
-    // Sort by date descending and get yesterday's (second to last)
+    // Sort by date descending (most recent first)
     const sorted = data.sort((a: { fecha: string }, b: { fecha: string }) => 
       new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
     );
     
-    // Get the previous day's rate (index 1, since 0 is today/latest)
-    const yesterday = sorted[1];
-    return yesterday?.venta || null;
+    // Calculate date from 24 hours ago
+    const now = new Date();
+    const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const targetDateStr = twentyFourHoursAgo.toISOString().split('T')[0];
+    
+    // Find the rate from 24h ago, or the closest previous one
+    const rate24hAgo = sorted.find((r: { fecha: string }) => r.fecha <= targetDateStr);
+    
+    return rate24hAgo?.venta || null;
   } catch {
     return null;
   }
@@ -56,14 +62,14 @@ export const fetchDollarRates = async (): Promise<DolarRateWithVariation[]> => {
     
     const data: DolarRate[] = await response.json();
     
-    // Fetch yesterday's rates in parallel for all types
+    // Fetch rates from 24h ago in parallel for all types
     const ratesWithVariation = await Promise.all(
       data.map(async (rate) => {
-        const yesterdayRate = await fetchYesterdayRate(rate.casa);
+        const rate24hAgo = await fetch24hAgoRate(rate.casa);
         let variacion: number | undefined;
         
-        if (yesterdayRate && yesterdayRate > 0) {
-          variacion = ((rate.venta - yesterdayRate) / yesterdayRate) * 100;
+        if (rate24hAgo && rate24hAgo > 0) {
+          variacion = ((rate.venta - rate24hAgo) / rate24hAgo) * 100;
         }
         
         return {

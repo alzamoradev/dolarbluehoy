@@ -49,7 +49,7 @@ export const DollarCard: React.FC<Props> = ({ rate }) => {
       <meta itemProp="name" content={baseName} />
       <div className="flex items-center gap-2 mb-1 text-black">
         <h2 className="font-bold font-retro uppercase text-lg pl-1 truncate" itemProp="description">{displayName}</h2>
-        {/* Variation Badge */}
+        {/* Variation Badge - Last 24 hours */}
         {hasVariation && (
           <span 
             className={`text-xs font-bold font-retro px-2 py-0.5 rounded-sm border ${
@@ -59,6 +59,7 @@ export const DollarCard: React.FC<Props> = ({ rate }) => {
                   ? 'bg-red-100 text-red-700 border-red-400'
                   : 'bg-gray-100 text-gray-600 border-gray-400'
             }`}
+            title="Variación en las últimas 24 horas"
           >
             {isPositive && '▲'}
             {isNegative && '▼'}
