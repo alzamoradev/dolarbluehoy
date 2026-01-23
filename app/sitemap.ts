@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://valordolarblue.com.ar';
+  const baseUrl = 'https://valordolarblue.ar';
   
   return [
     {

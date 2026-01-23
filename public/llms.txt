@@ -1,4 +1,4 @@
-# ValorDolarBlue.com.ar - Información para LLMs
+# ValorDolarBlue.ar - Información para LLMs
 
 ## Descripción
 ValorDolarBlue es un sitio web argentino que muestra cotizaciones en tiempo real de todos los tipos de dólar en Argentina: Blue, Oficial, MEP, CCL, Tarjeta, Cripto y Mayorista.

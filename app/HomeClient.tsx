@@ -132,10 +132,10 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
     return () => clearInterval(timer);
   }, []);
 
-  // Rate limiting: max 2 requests per hour
+  // Rate limiting: max 1 request per 30 minutes
   const checkRateLimit = (): { allowed: boolean; remainingTime?: number } => {
-    const RATE_LIMIT = 2;
-    const WINDOW_MS = 60 * 60 * 1000; // 1 hour
+    const RATE_LIMIT = 1;
+    const WINDOW_MS = 30 * 60 * 1000; // 30 minutes
     const now = Date.now();
     
     const stored = localStorage.getItem('ai_rate_limit');

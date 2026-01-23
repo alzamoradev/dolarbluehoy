@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'es_AR',
-    url: 'https://valordolarblue.com.ar',
+    url: 'https://valordolarblue.ar',
     siteName: 'Valor Dólar Blue',
   },
   twitter: {
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     creator: '@DolarBlueDiario',
   },
   alternates: {
-    canonical: 'https://valordolarblue.com.ar',
+    canonical: 'https://valordolarblue.ar',
   },
 };
 

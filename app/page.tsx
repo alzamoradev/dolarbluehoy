@@ -34,7 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       images: [
         {
-          url: 'https://valordolarblue.com.ar/og-image.png',
+          url: 'https://valordolarblue.ar/og-image.png',
           width: 1200,
           height: 630,
           alt: 'Cotización Dólar Blue Argentina',
@@ -44,7 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       title,
       description,
-      images: ['https://valordolarblue.com.ar/og-image.png'],
+      images: ['https://valordolarblue.ar/og-image.png'],
     },
   };
 }
@@ -121,12 +121,12 @@ function generateJsonLd(rates: DolarRate[]) {
       // Organization
       {
         "@type": "Organization",
-        "@id": "https://valordolarblue.com.ar/#organization",
+        "@id": "https://valordolarblue.ar/#organization",
         "name": "Valor Dólar Blue",
-        "url": "https://valordolarblue.com.ar",
+        "url": "https://valordolarblue.ar",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://valordolarblue.com.ar/favicon.png",
+          "url": "https://valordolarblue.ar/favicon.png",
           "width": 512,
           "height": 512
         },
@@ -142,33 +142,33 @@ function generateJsonLd(rates: DolarRate[]) {
       // WebSite
       {
         "@type": "WebSite",
-        "@id": "https://valordolarblue.com.ar/#website",
-        "url": "https://valordolarblue.com.ar",
+        "@id": "https://valordolarblue.ar/#website",
+        "url": "https://valordolarblue.ar",
         "name": "Valor Dólar Blue Hoy",
         "description": "Cotización del dólar blue, oficial, MEP, CCL y cripto en Argentina",
         "publisher": {
-          "@id": "https://valordolarblue.com.ar/#organization"
+          "@id": "https://valordolarblue.ar/#organization"
         },
         "inLanguage": "es-AR",
         "potentialAction": {
           "@type": "SearchAction",
-          "target": "https://valordolarblue.com.ar/?q={search_term_string}",
+          "target": "https://valordolarblue.ar/?q={search_term_string}",
           "query-input": "required name=search_term_string"
         }
       },
       // WebPage
       {
         "@type": "WebPage",
-        "@id": "https://valordolarblue.com.ar/#webpage",
-        "url": "https://valordolarblue.com.ar",
+        "@id": "https://valordolarblue.ar/#webpage",
+        "url": "https://valordolarblue.ar",
         "name": title,
         "description": description,
         "isPartOf": {
-          "@id": "https://valordolarblue.com.ar/#website"
+          "@id": "https://valordolarblue.ar/#website"
         },
         "primaryImageOfPage": {
           "@type": "ImageObject",
-          "url": "https://valordolarblue.com.ar/og-image.png"
+          "url": "https://valordolarblue.ar/og-image.png"
         },
         "datePublished": "2024-01-01T00:00:00-03:00",
         "dateModified": blueRate?.fechaActualizacion || new Date().toISOString(),
@@ -177,13 +177,13 @@ function generateJsonLd(rates: DolarRate[]) {
       // FAQPage - Dynamic with current prices
       {
         "@type": "FAQPage",
-        "@id": "https://valordolarblue.com.ar/#faq",
+        "@id": "https://valordolarblue.ar/#faq",
         "mainEntity": [...faqEntities, ...staticFaqs]
       },
       // FinancialProduct for Blue
       blueRate && {
         "@type": "FinancialProduct",
-        "@id": "https://valordolarblue.com.ar/#dolar-blue",
+        "@id": "https://valordolarblue.ar/#dolar-blue",
         "name": "Dólar Blue Argentina",
         "description": `Cotización del Dólar Blue hoy ${todayString}`,
         "category": "Currency Exchange",
@@ -212,7 +212,7 @@ function generateJsonLd(rates: DolarRate[]) {
       // FinancialProduct for Oficial
       oficialRate && {
         "@type": "FinancialProduct",
-        "@id": "https://valordolarblue.com.ar/#dolar-oficial",
+        "@id": "https://valordolarblue.ar/#dolar-oficial",
         "name": "Dólar Oficial Argentina",
         "description": `Cotización del Dólar Oficial hoy ${todayString}`,
         "category": "Currency Exchange",
@@ -226,7 +226,7 @@ function generateJsonLd(rates: DolarRate[]) {
       // FinancialProduct for MEP
       mepRate && {
         "@type": "FinancialProduct",
-        "@id": "https://valordolarblue.com.ar/#dolar-mep",
+        "@id": "https://valordolarblue.ar/#dolar-mep",
         "name": "Dólar MEP Argentina",
         "description": `Cotización del Dólar MEP/Bolsa hoy ${todayString}`,
         "category": "Currency Exchange",
@@ -240,7 +240,7 @@ function generateJsonLd(rates: DolarRate[]) {
       // WebApplication
       {
         "@type": "WebApplication",
-        "@id": "https://valordolarblue.com.ar/#calculator",
+        "@id": "https://valordolarblue.ar/#calculator",
         "name": "Calculadora Dólar a Pesos",
         "description": "Calculadora de conversión de dólares a pesos argentinos con cotización en tiempo real",
         "applicationCategory": "FinanceApplication",
@@ -265,13 +265,13 @@ function generateJsonLd(rates: DolarRate[]) {
             "@type": "ListItem",
             "position": 1,
             "name": "Inicio",
-            "item": "https://valordolarblue.com.ar"
+            "item": "https://valordolarblue.ar"
           },
           {
             "@type": "ListItem",
             "position": 2,
             "name": "Cotizaciones del Dólar",
-            "item": "https://valordolarblue.com.ar/#cotizaciones"
+            "item": "https://valordolarblue.ar/#cotizaciones"
           }
         ]
       }
