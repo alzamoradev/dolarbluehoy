@@ -7,14 +7,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: baseUrl,
       lastModified: new Date(),
-      changeFrequency: 'always', // Cotizaciones se actualizan constantemente
+      changeFrequency: 'hourly',
       priority: 1,
-    },
-    {
-      url: `${baseUrl}/#cotizaciones`,
-      lastModified: new Date(),
-      changeFrequency: 'always',
-      priority: 0.9,
     },
   ];
 }
