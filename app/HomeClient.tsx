@@ -8,6 +8,8 @@ import { Win98Window, Win98Button, Win98Panel } from '@/components/RetroUI';
 import { DollarCard, getDollarDisplayName } from '@/components/DollarCard';
 import { HistoryChart } from '@/components/HistoryChart';
 import { Calculator } from '@/components/Calculator';
+import { Minesweeper } from '@/components/Minesweeper';
+import { Solitaire } from '@/components/Solitaire';
 import { analyzeMarket } from '@/services/geminiService';
 
 // --- SVG Icons ---
@@ -123,6 +125,8 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
   const [historyOpen, setHistoryOpen] = useState(false);
   const [cyberAlertOpen, setCyberAlertOpen] = useState(false);
   const [faqOpen, setFaqOpen] = useState(false);
+  const [minesweeperOpen, setMinesweeperOpen] = useState(false);
+  const [solitaireOpen, setSolitaireOpen] = useState(false);
   
   // Clock state
   const [time, setTime] = useState(new Date());
@@ -248,7 +252,28 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
         <span className="bg-win-teal text-xs px-1 group-hover:bg-blue-900 group-hover:border-dotted group-hover:border-white border border-transparent font-retro tracking-wide text-center leading-tight">Preguntas</span>
       </button>
 
-      {/* Games */}
+      {/* Playable Games */}
+      <button onClick={() => setMinesweeperOpen(true)} className="flex flex-col items-center gap-1 group cursor-pointer text-shadow">
+        <ImageWithFallback 
+          src="/icons/buscaminas.png" 
+          alt="Buscaminas" 
+          fallback={<span className="text-2xl">💣</span>}
+          className="w-10 h-10 object-contain drop-shadow-md" 
+        />
+        <span className="bg-win-teal text-xs px-1 group-hover:bg-blue-900 group-hover:border-dotted group-hover:border-white border border-transparent font-retro tracking-wide">Buscaminas</span>
+      </button>
+
+      <button onClick={() => setSolitaireOpen(true)} className="flex flex-col items-center gap-1 group cursor-pointer text-shadow">
+        <ImageWithFallback 
+          src="/icons/solitario" 
+          alt="Solitario" 
+          fallback={<span className="text-2xl">🃏</span>}
+          className="w-10 h-10 object-contain drop-shadow-md" 
+        />
+        <span className="bg-win-teal text-xs px-1 group-hover:bg-blue-900 group-hover:border-dotted group-hover:border-white border border-transparent font-retro tracking-wide">Solitario</span>
+      </button>
+
+      {/* Decorative Games (show cyber alert) */}
       <button onClick={() => setCyberAlertOpen(true)} className="flex flex-col items-center gap-1 group cursor-pointer text-shadow">
         <ImageWithFallback 
           src="/icons/half-life-1.png" 
@@ -447,6 +472,32 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
                   </Win98Button>
                 </div>
               </div>
+            </Win98Window>
+          </div>
+        )}
+
+        {/* Minesweeper Game Window */}
+        {minesweeperOpen && (
+          <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-sm">
+            <Win98Window 
+              title="Buscaminas" 
+              className="shadow-2xl"
+              onClose={() => setMinesweeperOpen(false)}
+            >
+              <Minesweeper />
+            </Win98Window>
+          </div>
+        )}
+
+        {/* Solitaire Game Window */}
+        {solitaireOpen && (
+          <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-sm overflow-auto py-4">
+            <Win98Window 
+              title="Solitario" 
+              className="shadow-2xl max-h-[90vh] overflow-auto"
+              onClose={() => setSolitaireOpen(false)}
+            >
+              <Solitaire />
             </Win98Window>
           </div>
         )}
