@@ -9,8 +9,8 @@ export const analyzeMarket = async (rates: DolarRate[]): Promise<MarketInsight> 
   if (!apiKey) {
     console.error("GEMINI_API_KEY not configured");
     return {
-      analysisDollar: "El análisis de IA no está disponible.",
-      analysisPeso: "Configure la variable GEMINI_API_KEY en Vercel.",
+      analysisDollar: "El análisis no está disponible.",
+      analysisPeso: "Configurá la variable GEMINI_API_KEY en Vercel.",
       disclaimer: "Sin API key configurada.",
       sources: []
     };
@@ -22,27 +22,36 @@ export const analyzeMarket = async (rates: DolarRate[]): Promise<MarketInsight> 
   const oficial = rates.find(r => r.casa === 'oficial');
   const mep = rates.find(r => r.casa === 'bolsa');
   const ccl = rates.find(r => r.casa === 'contadoconliqui');
+  const brecha = blue && oficial ? ((blue.venta / oficial.venta - 1) * 100).toFixed(1) : 'N/A';
 
-  const prompt = `Sos un analista financiero argentino objetivo. Datos actuales:
+  const prompt = `Sos un analista financiero argentino que habla con lenguaje coloquial argentino (usá "vos", "tenés", "podés", etc.). 
+
+Datos actuales del mercado:
 - Dólar Blue: $${blue?.venta || 'N/A'}
 - Dólar Oficial: $${oficial?.venta || 'N/A'}  
 - Dólar MEP: $${mep?.venta || 'N/A'}
 - Dólar CCL: $${ccl?.venta || 'N/A'}
-- Brecha Blue/Oficial: ${blue && oficial ? ((blue.venta / oficial.venta - 1) * 100).toFixed(1) : 'N/A'}%
+- Brecha Blue/Oficial: ${brecha}%
 
-Generá un análisis BREVE (2 oraciones máximo cada uno):
-1. "analysisDollar": Argumentos para dolarizarse (riesgos de devaluación, cobertura)
-2. "analysisPeso": Argumentos para carry trade en pesos (tasa vs inflación)
-3. "disclaimer": Aviso legal breve
+Generá un análisis BREVE (2 oraciones máximo cada uno) usando expresiones argentinas naturales como:
+- "el dólar está planchado"
+- "conviene hacer carry trade"
+- "la brecha está achicándose/agrandándose"
+- "el blue se está calentando"
+- "las tasas siguen siendo atractivas"
 
-Respondé SOLO en JSON válido, sin markdown ni explicaciones adicionales:
+1. "analysisDollar": Razones para dolarizarse (cobertura, riesgo de devaluación). Máx 2 oraciones.
+2. "analysisPeso": Razones para quedarse en pesos/carry trade. Máx 2 oraciones.
+3. "disclaimer": "Esto no es asesoramiento financiero. Consultá con un profesional antes de invertir."
+
+IMPORTANTE: Respondé SOLO con JSON válido, sin markdown, sin backticks, sin explicaciones:
 {"analysisDollar": "...", "analysisPeso": "...", "disclaimer": "..."}`;
 
   try {
     const model = genAI.getGenerativeModel({ 
       model: "gemini-2.5-flash-lite",
       generationConfig: {
-        temperature: 0.7,
+        temperature: 0.8,
         maxOutputTokens: 500,
       }
     });
@@ -71,13 +80,12 @@ Respondé SOLO en JSON válido, sin markdown ni explicaciones adicionales:
   } catch (error) {
     console.error("Gemini analysis failed:", error);
     
-    // Return a more descriptive error
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     
     return {
       analysisDollar: `Error: ${errorMessage}`,
       analysisPeso: "No se pudo completar el análisis.",
-      disclaimer: "Intente nuevamente más tarde. Si el error persiste, verifique la configuración de la API.",
+      disclaimer: "Intentá de nuevo más tarde.",
       sources: []
     };
   }

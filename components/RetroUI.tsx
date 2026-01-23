@@ -8,9 +8,12 @@ interface WindowProps {
   icon?: React.ReactNode;
   onClose?: () => void;
   className?: string;
+  titleAs?: 'h2' | 'span'; // SEO: permite usar h2 para títulos importantes
 }
 
-export const Win98Window: React.FC<WindowProps> = ({ title, children, icon, onClose, className = '' }) => {
+export const Win98Window: React.FC<WindowProps> = ({ title, children, icon, onClose, className = '', titleAs = 'h2' }) => {
+  const TitleTag = titleAs;
+  
   return (
     <div className={`bg-win-gray border-2 p-1 flex flex-col shadow-xl ${className}`}
          style={{
@@ -22,10 +25,10 @@ export const Win98Window: React.FC<WindowProps> = ({ title, children, icon, onCl
          }}>
       {/* Title Bar */}
       <div className="bg-win-blue px-2 py-1 flex justify-between items-center mb-1">
-        <div className="flex items-center gap-2 text-white font-bold tracking-wider text-sm truncate font-retro">
+        <TitleTag className="flex items-center gap-2 text-white font-bold tracking-wider text-sm truncate font-retro m-0">
           {icon && <span className="w-4 h-4">{icon}</span>}
           {title}
-        </div>
+        </TitleTag>
         <div className="flex gap-1">
           {onClose && (
             <button 

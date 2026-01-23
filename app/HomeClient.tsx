@@ -222,6 +222,64 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
     return 'Cotización Dólar Blue, Oficial, MEP, CCL y Cripto Hoy Argentina';
   }, [rates]);
 
+  // Desktop Icons Component (reusable for desktop and mobile)
+  const DesktopIcons = ({ isMobile = false }: { isMobile?: boolean }) => (
+    <div className={`flex ${isMobile ? 'flex-row flex-wrap justify-center gap-4 py-4' : 'flex-col gap-6'} items-center text-white ${isMobile ? 'w-full' : 'w-20'}`}>
+      <a href="https://x.com/DolarBlueDiario" target="_blank" rel="noreferrer" className="flex flex-col items-center gap-1 group cursor-pointer text-shadow">
+        <div className="w-10 h-10 bg-black flex items-center justify-center border-2 border-gray-400 group-hover:bg-blue-900 group-hover:border-blue-300 transition-colors shadow-md">
+          <span className="text-2xl">𝕏</span>
+        </div>
+        <span className="bg-win-teal text-xs px-1 group-hover:bg-blue-900 group-hover:border-dotted group-hover:border-white border border-transparent font-retro tracking-wide">@DolarBlue</span>
+      </a>
+      
+      <button onClick={() => setHistoryOpen(true)} className="flex flex-col items-center gap-1 group cursor-pointer text-shadow">
+        <ImageWithFallback 
+          src="/icons/historico.png" 
+          alt="Ver histórico del dólar blue" 
+          fallback={<ChartIcon />}
+          className="w-10 h-10 object-contain drop-shadow-md" 
+        />
+        <span className="bg-win-teal text-xs px-1 group-hover:bg-blue-900 group-hover:border-dotted group-hover:border-white border border-transparent font-retro tracking-wide">Histórico</span>
+      </button>
+
+      <button onClick={() => setFaqOpen(true)} className="flex flex-col items-center gap-1 group cursor-pointer text-shadow">
+        <HelpIcon />
+        <span className="bg-win-teal text-xs px-1 group-hover:bg-blue-900 group-hover:border-dotted group-hover:border-white border border-transparent font-retro tracking-wide text-center leading-tight">Preguntas</span>
+      </button>
+
+      {/* Games */}
+      <button onClick={() => setCyberAlertOpen(true)} className="flex flex-col items-center gap-1 group cursor-pointer text-shadow">
+        <ImageWithFallback 
+          src="/icons/half-life-1.png" 
+          alt="Half-Life" 
+          fallback={<HLIcon />}
+          className="w-10 h-10 object-contain drop-shadow-md" 
+        />
+        <span className="bg-win-teal text-xs px-1 group-hover:bg-blue-900 group-hover:border-dotted group-hover:border-white border border-transparent font-retro tracking-wide">Half-Life</span>
+      </button>
+
+      <button onClick={() => setCyberAlertOpen(true)} className="flex flex-col items-center gap-1 group cursor-pointer text-shadow">
+        <ImageWithFallback 
+          src="/icons/quake.png" 
+          alt="Quake" 
+          fallback={<QuakeIcon />}
+          className="w-10 h-10 object-contain drop-shadow-md" 
+        />
+        <span className="bg-win-teal text-xs px-1 group-hover:bg-blue-900 group-hover:border-dotted group-hover:border-white border border-transparent font-retro tracking-wide">Quake</span>
+      </button>
+
+      <button onClick={() => setCyberAlertOpen(true)} className="flex flex-col items-center gap-1 group cursor-pointer text-shadow">
+        <ImageWithFallback 
+          src="/icons/mortal-kombat-1.png" 
+          alt="Mortal Kombat" 
+          fallback={<MKIcon />}
+          className="w-10 h-10 object-contain drop-shadow-md" 
+        />
+        <span className="bg-win-teal text-xs px-1 group-hover:bg-blue-900 group-hover:border-dotted group-hover:border-white border border-transparent font-retro tracking-wide text-center">MK</span>
+      </button>
+    </div>
+  );
+
   return (
     <div className="min-h-screen flex flex-col font-sans select-none overflow-hidden text-sm">
       {/* SEO H1 - Visually hidden but accessible */}
@@ -232,7 +290,7 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
         
         {/* Main Rates Window */}
         <Win98Window 
-          title="Cotizaciones - ValorDolarBlue.exe" 
+          title="Cotizaciones del Dólar Hoy" 
           icon={<ComputerIcon />} 
           className="w-full md:max-w-md z-10 h-fit"
         >
@@ -252,11 +310,14 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
           </div>
         </Win98Window>
 
-        {/* Right Column: AI Assistant + Calculator */}
+        {/* Right Column: Calculator FIRST, then AI Assistant */}
         <div className="w-full md:max-w-md flex flex-col gap-6">
-          {/* AI Assistant Window */}
+          {/* Calculator FIRST */}
+          <Calculator rates={rates} />
+
+          {/* AI Assistant Window - SECOND */}
           <Win98Window 
-            title="Analista Financiero (IA)" 
+            title="¿Invertir en pesos o en dólares?" 
             icon={<NetIcon />}
             className="w-full z-0 h-fit"
             onClose={() => setAiStatus(AnalysisStatus.IDLE)}
@@ -266,8 +327,8 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
                 <div className="text-4xl animate-bounce" aria-hidden="true">📎</div>
                 <div className="bg-[#FFFFE1] border border-black p-3 relative shadow-md text-black font-retro leading-tight w-full">
                   <div className="absolute -left-2 top-2 w-0 h-0 border-t-[8px] border-t-transparent border-r-[8px] border-r-black border-b-[8px] border-b-transparent"></div>
-                  {aiStatus === AnalysisStatus.IDLE && "Hola. Comparo escenarios (Dólar vs Peso) analizando el mercado. Recuerda que no soy un asesor financiero."}
-                  {aiStatus === AnalysisStatus.LOADING && "Analizando el mercado y expectativas..."}
+                  {aiStatus === AnalysisStatus.IDLE && "¡Hola! Te muestro los escenarios de invertir en Dólar vs Peso analizando el mercado actual. Acordate que esto no es asesoramiento financiero."}
+                  {aiStatus === AnalysisStatus.LOADING && "Analizando el mercado... bancame unos segundos."}
                   {aiStatus === AnalysisStatus.SUCCESS && insight && (
                     <div className="flex flex-col gap-2">
                       <div className="border-b border-black pb-1">
@@ -300,7 +361,7 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
                       </div>
                     </div>
                   )}
-                  {aiStatus === AnalysisStatus.ERROR && "Ocurrió un error al contactar al experto. Intente más tarde."}
+                  {aiStatus === AnalysisStatus.ERROR && "Hubo un problema al analizar. Intentá de nuevo en unos minutos."}
                   {rateLimitMsg && (
                     <div className="text-orange-700 font-bold">
                       ⏱️ {rateLimitMsg}
@@ -316,20 +377,16 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
               </div>
             </div>
           </Win98Window>
-
-          {/* Calculator */}
-          <Calculator rates={rates} />
         </div>
 
         {/* FAQ Window */}
         {faqOpen && (
           <Win98Window
-            title="Ayuda - Preguntas Frecuentes"
+            title="Preguntas Frecuentes sobre el Dólar"
             className="absolute top-10 left-10 md:left-1/2 w-full max-w-lg z-50 h-3/4"
             onClose={() => setFaqOpen(false)}
           >
             <div className="bg-white p-4 h-full overflow-y-auto text-black font-sans text-sm">
-              <h2 className="font-bold text-lg mb-4 border-b-2 border-black">Preguntas Frecuentes</h2>
               <div className="flex flex-col gap-4">
                 {faqItems.map((item, idx) => (
                   <div key={idx} className="pb-2">
@@ -348,7 +405,7 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
         {/* History Window */}
         {historyOpen && (
           <Win98Window 
-            title="Gráfico Histórico - Blue" 
+            title="Gráfico Histórico del Dólar Blue" 
             className="absolute top-10 left-10 md:left-1/3 w-96 z-50"
             onClose={() => setHistoryOpen(false)}
           >
@@ -368,6 +425,7 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
               title="Control de CiberCafé - Server" 
               className="w-96 shadow-2xl"
               onClose={() => setCyberAlertOpen(false)}
+              titleAs="span"
             >
               <div className="p-6 bg-win-gray flex flex-col items-center gap-4 text-center">
                 <div className="flex items-center gap-4 w-full justify-center">
@@ -392,62 +450,16 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
           </div>
         )}
 
-        {/* Desktop Icons */}
-        <aside className="absolute top-4 right-4 flex flex-col gap-6 items-center text-white w-20" aria-label="Accesos directos">
-          <a href="https://x.com/DolarBlueDiario" target="_blank" rel="noreferrer" className="flex flex-col items-center gap-1 group cursor-pointer text-shadow">
-            <div className="w-10 h-10 bg-black flex items-center justify-center border-2 border-gray-400 group-hover:bg-blue-900 group-hover:border-blue-300 transition-colors shadow-md">
-              <span className="text-2xl">𝕏</span>
-            </div>
-            <span className="bg-win-teal text-xs px-1 group-hover:bg-blue-900 group-hover:border-dotted group-hover:border-white border border-transparent font-retro tracking-wide">@DolarBlue</span>
-          </a>
-          
-          <button onClick={() => setHistoryOpen(true)} className="flex flex-col items-center gap-1 group cursor-pointer text-shadow">
-            <ImageWithFallback 
-              src="/icons/historico.png" 
-              alt="Ver histórico del dólar blue" 
-              fallback={<ChartIcon />}
-              className="w-10 h-10 object-contain drop-shadow-md" 
-            />
-            <span className="bg-win-teal text-xs px-1 group-hover:bg-blue-900 group-hover:border-dotted group-hover:border-white border border-transparent font-retro tracking-wide">Histórico</span>
-          </button>
-
-          <button onClick={() => setFaqOpen(true)} className="flex flex-col items-center gap-1 group cursor-pointer text-shadow">
-            <HelpIcon />
-            <span className="bg-win-teal text-xs px-1 group-hover:bg-blue-900 group-hover:border-dotted group-hover:border-white border border-transparent font-retro tracking-wide text-center leading-tight">Preguntas Frecuentes</span>
-          </button>
-
-          {/* Games */}
-          <button onClick={() => setCyberAlertOpen(true)} className="flex flex-col items-center gap-1 group cursor-pointer text-shadow mt-4">
-            <ImageWithFallback 
-              src="/icons/half-life-1.png" 
-              alt="Half-Life" 
-              fallback={<HLIcon />}
-              className="w-10 h-10 object-contain drop-shadow-md" 
-            />
-            <span className="bg-win-teal text-xs px-1 group-hover:bg-blue-900 group-hover:border-dotted group-hover:border-white border border-transparent font-retro tracking-wide">Half-Life</span>
-          </button>
-
-          <button onClick={() => setCyberAlertOpen(true)} className="flex flex-col items-center gap-1 group cursor-pointer text-shadow">
-            <ImageWithFallback 
-              src="/icons/quake.png" 
-              alt="Quake" 
-              fallback={<QuakeIcon />}
-              className="w-10 h-10 object-contain drop-shadow-md" 
-            />
-            <span className="bg-win-teal text-xs px-1 group-hover:bg-blue-900 group-hover:border-dotted group-hover:border-white border border-transparent font-retro tracking-wide">Quake</span>
-          </button>
-
-          <button onClick={() => setCyberAlertOpen(true)} className="flex flex-col items-center gap-1 group cursor-pointer text-shadow">
-            <ImageWithFallback 
-              src="/icons/mortal-kombat-1.png" 
-              alt="Mortal Kombat" 
-              fallback={<MKIcon />}
-              className="w-10 h-10 object-contain drop-shadow-md" 
-            />
-            <span className="bg-win-teal text-xs px-1 group-hover:bg-blue-900 group-hover:border-dotted group-hover:border-white border border-transparent font-retro tracking-wide text-center">Mortal Kombat</span>
-          </button>
+        {/* Desktop Icons - Hidden on mobile, shown on desktop */}
+        <aside className="hidden md:flex absolute top-4 right-4 flex-col gap-6 items-center text-white w-20" aria-label="Accesos directos">
+          <DesktopIcons />
         </aside>
       </main>
+
+      {/* Mobile Icons Section - Visible only on mobile */}
+      <section className="md:hidden bg-win-teal/30 border-t-2 border-white px-4 pb-4" aria-label="Accesos directos móvil">
+        <DesktopIcons isMobile={true} />
+      </section>
 
       {/* Taskbar */}
       <footer className="h-10 bg-win-gray border-t-2 border-white flex items-center px-1 gap-1 fixed bottom-0 w-full shadow-lg z-50">
@@ -486,4 +498,3 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
     </div>
   );
 }
-
