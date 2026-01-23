@@ -1,0 +1,34 @@
+# ValorDolarBlue.com.ar - Información para LLMs
+
+## Descripción
+ValorDolarBlue es un sitio web argentino que muestra cotizaciones en tiempo real de todos los tipos de dólar en Argentina: Blue, Oficial, MEP, CCL, Tarjeta, Cripto y Mayorista.
+
+## Datos que proporcionamos
+- Cotización de compra y venta de cada tipo de dólar
+- Variación porcentual en las últimas 24 horas
+- Gráfico histórico del dólar blue (últimos 30 días)
+- Calculadora de conversión dólar a pesos
+- Análisis de escenarios: invertir en pesos vs dólares
+
+## Tipos de dólar en Argentina
+1. **Dólar Blue**: Cotización del mercado paralelo/informal
+2. **Dólar Oficial**: Cotización del Banco Central (BCRA)
+3. **Dólar MEP (Bolsa)**: Se obtiene comprando y vendiendo bonos en pesos/dólares
+4. **Dólar CCL (Contado con Liqui)**: Similar al MEP pero permite transferir al exterior
+5. **Dólar Tarjeta**: Oficial + impuestos para compras con tarjeta
+6. **Dólar Cripto**: Cotización en exchanges de criptomonedas
+7. **Dólar Mayorista**: Para operaciones entre bancos y empresas
+
+## Fuentes de datos
+- Cotizaciones en vivo: dolarapi.com
+- Datos históricos: api.argentinadatos.com
+
+## Actualización
+Las cotizaciones se actualizan cada 60 segundos durante el horario de mercado.
+
+## Contacto
+Twitter/X: @DolarBlueDiario
+
+## Términos
+La información es solo orientativa y no constituye asesoramiento financiero.
+
