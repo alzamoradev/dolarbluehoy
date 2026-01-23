@@ -387,12 +387,12 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
             className="absolute top-10 left-10 md:left-1/2 w-full max-w-lg z-50 h-3/4"
             onClose={() => setFaqOpen(false)}
           >
-            <div className="bg-white p-4 h-full overflow-y-auto text-black font-sans text-sm">
+            <div className="bg-white p-4 h-full overflow-y-auto text-black font-retro text-sm">
               <div className="flex flex-col gap-4">
                 {faqItems.map((item, idx) => (
                   <div key={idx} className="pb-2">
-                    <h3 className="font-bold text-blue-800 mb-1">❓ {item.q}</h3>
-                    <p className="text-gray-800 pl-4 bg-gray-50 p-2 border-l-4 border-win-teal">{item.a}</p>
+                    <h3 className="font-bold text-blue-800 mb-1 font-retro">❓ {item.q}</h3>
+                    <p className="text-gray-800 pl-4 bg-gray-50 p-2 border-l-4 border-win-teal font-retro">{item.a}</p>
                   </div>
                 ))}
               </div>

@@ -52,7 +52,7 @@ export const DollarCard: React.FC<Props> = ({ rate }) => {
         {/* Variation Badge */}
         {hasVariation && (
           <span 
-            className={`text-xs font-bold px-2 py-0.5 rounded-sm border ${
+            className={`text-xs font-bold font-retro px-2 py-0.5 rounded-sm border ${
               isPositive 
                 ? 'bg-green-100 text-green-700 border-green-400' 
                 : isNegative 
