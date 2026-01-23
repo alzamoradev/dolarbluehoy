@@ -1,6 +1,7 @@
+'use client';
+
 import React from 'react';
 
-// Common wrapper for a Windows 98 window
 interface WindowProps {
   title: string;
   children: React.ReactNode;
@@ -50,11 +51,11 @@ export const Win98Window: React.FC<WindowProps> = ({ title, children, icon, onCl
 export const Win98Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({ children, className = '', ...props }) => {
   return (
     <button 
-      className={`bg-win-gray px-4 py-1 text-black font-retro active:border-t-black active:border-l-black active:border-b-white active:border-r-white active:bg-[#b0b0b0] ${className}`}
+      className={`bg-win-gray px-4 py-1 text-black font-retro active:border-t-black active:border-l-black active:border-b-white active:border-r-white active:bg-[#b0b0b0] disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
       style={{
         borderWidth: '2px',
         borderStyle: 'solid',
-        borderColor: '#fff #000 #000 #fff' // 3D effect: Top, Right, Bottom, Left
+        borderColor: '#fff #000 #000 #fff'
       }}
       {...props}
     >
@@ -70,7 +71,7 @@ export const Win98Panel: React.FC<{children: React.ReactNode, className?: string
       style={{
         borderWidth: '2px',
         borderStyle: 'solid',
-        borderColor: '#000 #fff #fff #000' // Sunken effect
+        borderColor: '#000 #fff #fff #000'
       }}
     >
       {children}

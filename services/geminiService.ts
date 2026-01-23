@@ -1,16 +1,25 @@
-import { GoogleGenAI, Type } from "@google/genai";
-import { DolarRate, MarketInsight } from '../types';
+'use server';
+
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { DolarRate, MarketInsight } from '@/types';
 
 export const analyzeMarket = async (rates: DolarRate[]): Promise<MarketInsight> => {
-  if (!process.env.API_KEY) {
-    throw new Error("API Key not found");
+  const apiKey = process.env.GEMINI_API_KEY;
+  
+  if (!apiKey) {
+    return {
+      analysisDollar: "API key no configurada.",
+      analysisPeso: "API key no configurada.",
+      disclaimer: "Configure GEMINI_API_KEY para habilitar el análisis.",
+      sources: []
+    };
   }
 
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const genAI = new GoogleGenerativeAI(apiKey);
 
   const blue = rates.find(r => r.casa === 'blue');
   const oficial = rates.find(r => r.casa === 'oficial');
-  const mep = rates.find(r => r.casa === 'mep');
+  const mep = rates.find(r => r.casa === 'bolsa');
   const ccl = rates.find(r => r.casa === 'contadoconliqui');
 
   const prompt = `
@@ -23,71 +32,39 @@ export const analyzeMarket = async (rates: DolarRate[]): Promise<MarketInsight> 
     CCL: $${ccl?.venta}
     
     Tarea:
-    1. Busca en Google noticias financieras recientes sobre el dólar en Argentina, expectativas de devaluación y tasas de interés generales (referencia).
-       
-    2. Genera un reporte comparativo con dos escenarios:
-       - Escenario Dólar: Argumentos para quienes prefieren dolarizarse (cobertura, riesgos de devaluación, brecha).
-       - Escenario Peso (Carry Trade): Argumentos para quienes apuestan a la tasa en pesos (aprovechando estabilidad cambiaria momentánea).
+    1. Genera un reporte comparativo con dos escenarios:
+       - Escenario Dólar: Argumentos para quienes prefieren dolarizarse (cobertura, riesgos de devaluación, brecha). Máx 2 oraciones.
+       - Escenario Peso (Carry Trade): Argumentos para quienes apuestan a la tasa en pesos. Máx 2 oraciones.
 
-    3. Reglas CRÍTICAS:
-       - NO incluyas una sección específica de tasas numéricas. Integra el razonamiento en los escenarios.
-       - NO des consejos de inversión directos (ej: "Compra ahora"). Solo presenta los hechos y las perspectivas.
-       - Incluye un disclaimer legal fuerte.
+    2. Reglas CRÍTICAS:
+       - NO des consejos de inversión directos.
+       - Incluye un disclaimer legal.
+    
+    Responde en formato JSON con las keys: analysisDollar, analysisPeso, disclaimer
   `;
 
   try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
-      contents: prompt,
-      config: {
-        tools: [{ googleSearch: {} }],
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            analysisDollar: { 
-              type: Type.STRING, 
-              description: "Argumentos a favor de la dolarización (Escenario Alcista/Cobertura). Máx 2 oraciones." 
-            },
-            analysisPeso: { 
-              type: Type.STRING, 
-              description: "Argumentos a favor del Carry Trade/Peso (Escenario Tasa). Máx 2 oraciones." 
-            },
-            disclaimer: { 
-              type: Type.STRING, 
-              description: "Aviso legal explícito de que esto no es consejo financiero y conlleva riesgo." 
-            }
-          },
-          required: ["analysisDollar", "analysisPeso", "disclaimer"]
-        }
-      }
-    });
-
-    const jsonText = response.text;
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
     
-    // Extract sources
-    const sources: string[] = [];
-    if (response.candidates?.[0]?.groundingMetadata?.groundingChunks) {
-      response.candidates[0].groundingMetadata.groundingChunks.forEach((chunk: any) => {
-        if (chunk.web?.uri) {
-          sources.push(chunk.web.uri);
-        }
-      });
+    // Try to parse JSON from response
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const data = JSON.parse(jsonMatch[0]) as MarketInsight;
+      data.sources = [];
+      return data;
     }
-
-    if (!jsonText) throw new Error("No data returned");
     
-    const data = JSON.parse(jsonText) as MarketInsight;
-    data.sources = [...new Set(sources)].slice(0, 3);
-    
-    return data;
+    throw new Error("Could not parse response");
 
   } catch (error) {
     console.error("Gemini analysis failed:", error);
     return {
       analysisDollar: "No se pudieron obtener datos actualizados.",
       analysisPeso: "No se pudieron obtener datos actualizados.",
-      disclaimer: "Error de conexión. La información presentada puede estar desactualizada. No opere basándose en esto.",
+      disclaimer: "Error de conexión. La información puede estar desactualizada.",
       sources: []
     };
   }
