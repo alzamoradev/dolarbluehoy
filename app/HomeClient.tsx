@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
-import { DolarRate, HistoricalRate, MarketInsight, AnalysisStatus } from '@/types';
+import { HistoricalRate, MarketInsight, AnalysisStatus } from '@/types';
+import { DolarRateWithVariation } from '@/services/dolarService';
 import { Win98Window, Win98Button, Win98Panel } from '@/components/RetroUI';
 import { DollarCard, getDollarDisplayName } from '@/components/DollarCard';
 import { HistoryChart } from '@/components/HistoryChart';
@@ -108,12 +109,12 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({ fallback, src, al
 
 // --- Main Component ---
 interface HomeClientProps {
-  initialRates: DolarRate[];
+  initialRates: DolarRateWithVariation[];
   initialHistoricalData: HistoricalRate[];
 }
 
 export default function HomeClient({ initialRates, initialHistoricalData }: HomeClientProps) {
-  const [rates] = useState<DolarRate[]>(initialRates);
+  const [rates] = useState<DolarRateWithVariation[]>(initialRates);
   const [historicalData] = useState<HistoricalRate[]>(initialHistoricalData);
   const [insight, setInsight] = useState<MarketInsight | null>(null);
   const [aiStatus, setAiStatus] = useState<AnalysisStatus>(AnalysisStatus.IDLE);

@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { fetchDollarRates } from '@/services/dolarService';
+import { fetchDollarRates, DolarRateWithVariation } from '@/services/dolarService';
 import { fetchHistoricalRates } from '@/services/historyService';
 import { getDollarDisplayName } from '@/components/DollarCard';
 import { DolarRate } from '@/types';
