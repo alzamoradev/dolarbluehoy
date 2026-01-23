@@ -131,8 +131,43 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
     return () => clearInterval(timer);
   }, []);
 
+  // Rate limiting: max 2 requests per hour
+  const checkRateLimit = (): { allowed: boolean; remainingTime?: number } => {
+    const RATE_LIMIT = 2;
+    const WINDOW_MS = 60 * 60 * 1000; // 1 hour
+    const now = Date.now();
+    
+    const stored = localStorage.getItem('ai_rate_limit');
+    let requests: number[] = stored ? JSON.parse(stored) : [];
+    
+    // Filter requests within the time window
+    requests = requests.filter(time => now - time < WINDOW_MS);
+    
+    if (requests.length >= RATE_LIMIT) {
+      const oldestRequest = Math.min(...requests);
+      const remainingTime = Math.ceil((WINDOW_MS - (now - oldestRequest)) / 60000);
+      return { allowed: false, remainingTime };
+    }
+    
+    // Add current request
+    requests.push(now);
+    localStorage.setItem('ai_rate_limit', JSON.stringify(requests));
+    return { allowed: true };
+  };
+
+  const [rateLimitMsg, setRateLimitMsg] = useState<string | null>(null);
+
   const handleConsultAI = async () => {
     if (rates.length === 0) return;
+    
+    // Check rate limit
+    const { allowed, remainingTime } = checkRateLimit();
+    if (!allowed) {
+      setRateLimitMsg(`Límite alcanzado. Podés volver a analizar en ${remainingTime} minutos.`);
+      return;
+    }
+    setRateLimitMsg(null);
+    
     setAiStatus(AnalysisStatus.LOADING);
     try {
       const result = await analyzeMarket(rates);
@@ -251,6 +286,11 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
                     </div>
                   )}
                   {aiStatus === AnalysisStatus.ERROR && "Ocurrió un error al contactar al experto. Intente más tarde."}
+                  {rateLimitMsg && (
+                    <div className="text-orange-700 font-bold">
+                      ⏱️ {rateLimitMsg}
+                    </div>
+                  )}
                 </div>
               </div>
 
