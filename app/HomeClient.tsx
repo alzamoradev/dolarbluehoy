@@ -265,7 +265,7 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
 
       <button onClick={() => setSolitaireOpen(true)} className="flex flex-col items-center gap-1 group cursor-pointer text-shadow">
         <ImageWithFallback 
-          src="/icons/solitario" 
+          src="/icons/solitario.png" 
           alt="Solitario" 
           fallback={<span className="text-2xl">🃏</span>}
           className="w-10 h-10 object-contain drop-shadow-md" 
