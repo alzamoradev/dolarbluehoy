@@ -40,7 +40,7 @@ Respondé SOLO en JSON válido, sin markdown ni explicaciones adicionales:
 
   try {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash-latest",
+      model: "gemini-2.5-flash-lite",
       generationConfig: {
         temperature: 0.7,
         maxOutputTokens: 500,
