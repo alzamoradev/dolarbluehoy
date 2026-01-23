@@ -1,0 +1,79 @@
+import React from 'react';
+
+// Common wrapper for a Windows 98 window
+interface WindowProps {
+  title: string;
+  children: React.ReactNode;
+  icon?: React.ReactNode;
+  onClose?: () => void;
+  className?: string;
+}
+
+export const Win98Window: React.FC<WindowProps> = ({ title, children, icon, onClose, className = '' }) => {
+  return (
+    <div className={`bg-win-gray border-2 p-1 flex flex-col shadow-xl ${className}`}
+         style={{
+           borderTopColor: '#fff',
+           borderLeftColor: '#fff',
+           borderRightColor: '#000',
+           borderBottomColor: '#000',
+           boxShadow: '4px 4px 0px rgba(0,0,0,0.5)'
+         }}>
+      {/* Title Bar */}
+      <div className="bg-win-blue px-2 py-1 flex justify-between items-center mb-1">
+        <div className="flex items-center gap-2 text-white font-bold tracking-wider text-sm truncate font-retro">
+          {icon && <span className="w-4 h-4">{icon}</span>}
+          {title}
+        </div>
+        <div className="flex gap-1">
+          {onClose && (
+            <button 
+              onClick={onClose}
+              className="w-5 h-5 bg-win-gray flex items-center justify-center border text-xs font-bold active:translate-y-[1px]"
+              style={{
+                borderColor: '#fff #000 #000 #fff'
+              }}
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      </div>
+      {/* Content */}
+      <div className="flex-1 overflow-auto">
+        {children}
+      </div>
+    </div>
+  );
+};
+
+export const Win98Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({ children, className = '', ...props }) => {
+  return (
+    <button 
+      className={`bg-win-gray px-4 py-1 text-black font-retro active:border-t-black active:border-l-black active:border-b-white active:border-r-white active:bg-[#b0b0b0] ${className}`}
+      style={{
+        borderWidth: '2px',
+        borderStyle: 'solid',
+        borderColor: '#fff #000 #000 #fff' // 3D effect: Top, Right, Bottom, Left
+      }}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
+export const Win98Panel: React.FC<{children: React.ReactNode, className?: string}> = ({ children, className = '' }) => {
+  return (
+    <div 
+      className={`bg-white p-2 ${className}`}
+      style={{
+        borderWidth: '2px',
+        borderStyle: 'solid',
+        borderColor: '#000 #fff #fff #000' // Sunken effect
+      }}
+    >
+      {children}
+    </div>
+  );
+};
