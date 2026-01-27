@@ -351,7 +351,7 @@ export default function HomeClient({ initialRates, initialHistoricalData, initia
             </div>
             
             {/* Riesgo País - to the right of calculator */}
-            <div className="lg:w-56">
+            <div className="lg:w-80">
               <RiesgoPaisCard riesgoPais={riesgoPais} />
             </div>
           </div>
