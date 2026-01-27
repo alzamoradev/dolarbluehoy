@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { fetchDollarRates, DolarRateWithVariation } from '@/services/dolarService';
 import { fetchHistoricalRates } from '@/services/historyService';
+import { fetchRiesgoPais, RiesgoPais } from '@/services/riesgoPaisService';
 import { getDollarDisplayName } from '@/components/DollarCard';
 import { DolarRate } from '@/types';
 import HomeClient from './HomeClient';
@@ -10,7 +11,11 @@ export const revalidate = 60;
 
 // Dynamic metadata
 export async function generateMetadata(): Promise<Metadata> {
-  const rates = await fetchDollarRates();
+  const [rates, riesgoPais] = await Promise.all([
+    fetchDollarRates(),
+    fetchRiesgoPais()
+  ]);
+  
   const blueRate = rates.find(r => r.casa === 'blue');
   const oficialRate = rates.find(r => r.casa === 'oficial');
   const mepRate = rates.find(r => r.casa === 'bolsa');
@@ -18,12 +23,15 @@ export async function generateMetadata(): Promise<Metadata> {
   const dateOptions: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
   const todayString = new Date().toLocaleDateString('es-AR', dateOptions);
   
+  // Include riesgo país in title if available
+  const riesgoText = riesgoPais ? ` | Riesgo País ${riesgoPais.valor}` : '';
+  
   const title = blueRate 
-    ? `Dólar Blue $${blueRate.venta} | Oficial $${oficialRate?.venta} | MEP $${mepRate?.venta} - Hoy ${todayString}`
+    ? `Dólar Blue $${blueRate.venta} | Oficial $${oficialRate?.venta} | MEP $${mepRate?.venta}${riesgoText} - Hoy ${todayString}`
     : 'Dólar Blue Hoy - Cotización en Tiempo Real Argentina';
   
   const description = blueRate
-    ? `💵 Cotización ${todayString}: Dólar Blue $${blueRate.venta} | Oficial $${oficialRate?.venta} | MEP $${mepRate?.venta}. Todos los tipos de dólar en Argentina actualizados. Calculadora y gráficos.`
+    ? `💵 Cotización ${todayString}: Dólar Blue $${blueRate.venta} | Oficial $${oficialRate?.venta} | MEP $${mepRate?.venta}${riesgoPais ? ` | Riesgo País ${riesgoPais.valor} puntos (${riesgoPais.variacion})` : ''}. Todos los tipos de dólar en Argentina actualizados. Calculadora y gráficos.`
     : 'Cotización del Dólar Blue, Oficial, MEP, CCL y Cripto en Argentina. Valores actualizados de compra y venta.';
 
   return {
@@ -50,7 +58,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // Generate JSON-LD schemas
-function generateJsonLd(rates: DolarRate[]) {
+function generateJsonLd(rates: DolarRate[], riesgoPais: RiesgoPais | null) {
   const dateOptions: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
   const todayString = new Date().toLocaleDateString('es-AR', dateOptions);
   
@@ -70,6 +78,18 @@ function generateJsonLd(rates: DolarRate[]) {
       }
     };
   });
+
+  // Dynamic Riesgo País FAQ
+  const riesgoPaisFaq = riesgoPais ? [
+    {
+      "@type": "Question",
+      "name": "¿Cuál es el Riesgo País de Argentina hoy?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `El Riesgo País de Argentina hoy ${todayString} es de ${riesgoPais.valor} puntos, con una variación del ${riesgoPais.variacion}. Este índice EMBI+ es elaborado por JP Morgan y mide la diferencia entre los bonos argentinos y los del Tesoro de Estados Unidos.`
+      }
+    }
+  ] : [];
 
   // Static FAQs
   const staticFaqs = [
@@ -103,6 +123,14 @@ function generateJsonLd(rates: DolarRate[]) {
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "El carry trade, conocido como 'bicicleta financiera', es una estrategia que consiste en vender dólares, invertir los pesos en instrumentos con tasa de interés (como Plazos Fijos o Lecaps) y luego recomprar divisas, buscando obtener una ganancia superior a la devaluación del período."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué es el Riesgo País?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "El Riesgo País es un índice (EMBI+) elaborado por JP Morgan que mide la diferencia de rendimiento entre los bonos de un país y los bonos del Tesoro de Estados Unidos. A mayor valor, más riesgoso se considera invertir en ese país. Se expresa en puntos básicos."
       }
     }
   ];
@@ -178,7 +206,7 @@ function generateJsonLd(rates: DolarRate[]) {
       {
         "@type": "FAQPage",
         "@id": "https://valordolarblue.ar/#faq",
-        "mainEntity": [...faqEntities, ...staticFaqs]
+        "mainEntity": [...faqEntities, ...riesgoPaisFaq, ...staticFaqs]
       },
       // FinancialProduct for Blue
       blueRate && {
@@ -281,9 +309,10 @@ function generateJsonLd(rates: DolarRate[]) {
 
 export default async function Home() {
   // Server-side data fetching
-  const [rates, historicalData] = await Promise.all([
+  const [rates, historicalData, riesgoPais] = await Promise.all([
     fetchDollarRates(),
-    fetchHistoricalRates()
+    fetchHistoricalRates(),
+    fetchRiesgoPais()
   ]);
 
   // Sort rates by priority
@@ -295,7 +324,7 @@ export default async function Home() {
   });
 
   // Generate JSON-LD
-  const jsonLd = generateJsonLd(prioritizedRates);
+  const jsonLd = generateJsonLd(prioritizedRates, riesgoPais);
 
   return (
     <>
@@ -307,7 +336,8 @@ export default async function Home() {
       
       <HomeClient 
         initialRates={prioritizedRates} 
-        initialHistoricalData={historicalData} 
+        initialHistoricalData={historicalData}
+        initialRiesgoPais={riesgoPais}
       />
     </>
   );

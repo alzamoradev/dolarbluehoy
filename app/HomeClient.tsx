@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
-import { HistoricalRate, MarketInsight, AnalysisStatus } from '@/types';
+import { HistoricalRate, MarketInsight, AnalysisStatus, RiesgoPais } from '@/types';
 import { DolarRateWithVariation } from '@/services/dolarService';
 import { Win98Window, Win98Button, Win98Panel } from '@/components/RetroUI';
 import { DollarCard, getDollarDisplayName } from '@/components/DollarCard';
 import { HistoryChart } from '@/components/HistoryChart';
 import { Calculator } from '@/components/Calculator';
+import { RiesgoPaisCard } from '@/components/RiesgoPaisCard';
 import { Minesweeper } from '@/components/Minesweeper';
 import { analyzeMarket } from '@/services/geminiService';
 
@@ -112,11 +113,13 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({ fallback, src, al
 interface HomeClientProps {
   initialRates: DolarRateWithVariation[];
   initialHistoricalData: HistoricalRate[];
+  initialRiesgoPais: RiesgoPais | null;
 }
 
-export default function HomeClient({ initialRates, initialHistoricalData }: HomeClientProps) {
+export default function HomeClient({ initialRates, initialHistoricalData, initialRiesgoPais }: HomeClientProps) {
   const [rates] = useState<DolarRateWithVariation[]>(initialRates);
   const [historicalData] = useState<HistoricalRate[]>(initialHistoricalData);
+  const [riesgoPais] = useState<RiesgoPais | null>(initialRiesgoPais);
   const [insight, setInsight] = useState<MarketInsight | null>(null);
   const [aiStatus, setAiStatus] = useState<AnalysisStatus>(AnalysisStatus.IDLE);
   
@@ -199,7 +202,19 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
       };
     });
 
+    // Dynamic Riesgo País FAQ
+    const riesgoPaisFaq = riesgoPais ? [
+      {
+        q: "¿Cuál es el Riesgo País de Argentina hoy?",
+        a: `El Riesgo País de Argentina hoy ${todayString} es de ${riesgoPais.valor} puntos, con una variación del ${riesgoPais.variacion}. Este índice EMBI+ es elaborado por JP Morgan.`
+      }
+    ] : [];
+
     const statics = [
+      {
+        q: "¿Qué es el Riesgo País?",
+        a: "El Riesgo País es un índice (EMBI+) elaborado por JP Morgan que mide la diferencia de rendimiento entre los bonos de un país y los bonos del Tesoro de Estados Unidos. A mayor valor, más riesgoso se considera invertir en ese país."
+      },
       {
         q: "¿Qué es el carry trade?",
         a: "El carry trade, conocido como 'bicicleta financiera', es una estrategia que consiste en vender dólares, invertir los pesos en instrumentos con tasa de interés (como Plazos Fijos o Lecaps) y luego recomprar divisas, buscando obtener una ganancia superior a la devaluación del período."
@@ -210,20 +225,22 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
       }
     ];
 
-    return [...dynamic, ...statics];
-  }, [rates]);
+    return [...dynamic, ...riesgoPaisFaq, ...statics];
+  }, [rates, riesgoPais]);
 
-  // Generate H1 with all dollar types
+  // Generate H1 with all dollar types and riesgo país
   const h1Text = useMemo(() => {
     const blueRate = rates.find(r => r.casa === 'blue');
     const oficialRate = rates.find(r => r.casa === 'oficial');
     const mepRate = rates.find(r => r.casa === 'bolsa');
     
+    const riesgoText = riesgoPais ? ` | Riesgo País ${riesgoPais.valor}` : '';
+    
     if (blueRate && oficialRate && mepRate) {
-      return `Dólar Blue $${blueRate.venta} | Oficial $${oficialRate.venta} | MEP $${mepRate.venta} - Cotización Hoy`;
+      return `Dólar Blue $${blueRate.venta} | Oficial $${oficialRate.venta} | MEP $${mepRate.venta}${riesgoText} - Cotización Hoy`;
     }
     return 'Cotización Dólar Blue, Oficial, MEP, CCL y Cripto Hoy Argentina';
-  }, [rates]);
+  }, [rates, riesgoPais]);
 
   // Desktop Icons Component (reusable for desktop and mobile)
   const DesktopIcons = ({ isMobile = false }: { isMobile?: boolean }) => (
@@ -324,10 +341,20 @@ export default function HomeClient({ initialRates, initialHistoricalData }: Home
           </div>
         </Win98Window>
 
-        {/* Right Column: Calculator FIRST, then AI Assistant */}
-        <div className="w-full md:max-w-md flex flex-col gap-6">
-          {/* Calculator FIRST */}
-          <Calculator rates={rates} />
+        {/* Right Column: Calculator + Riesgo País, then AI Assistant */}
+        <div className="w-full md:max-w-lg flex flex-col gap-6">
+          {/* Calculator and Riesgo País side by side on larger screens */}
+          <div className="flex flex-col lg:flex-row gap-4">
+            {/* Calculator */}
+            <div className="flex-1">
+              <Calculator rates={rates} />
+            </div>
+            
+            {/* Riesgo País - to the right of calculator */}
+            <div className="lg:w-56">
+              <RiesgoPaisCard riesgoPais={riesgoPais} />
+            </div>
+          </div>
 
           {/* AI Assistant Window - SECOND */}
           <Win98Window 

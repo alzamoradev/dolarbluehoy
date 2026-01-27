@@ -33,3 +33,10 @@ export interface MarketInsight {
   disclaimer: string;
   sources?: string[];
 }
+
+export interface RiesgoPais {
+  valor: number;
+  fecha: string;
+  variacion: string;
+  tendencia: 'up' | 'down' | 'neutral';
+}
