@@ -341,22 +341,12 @@ export default function HomeClient({ initialRates, initialHistoricalData, initia
           </div>
         </Win98Window>
 
-        {/* Right Column: Calculator + Riesgo País, then AI Assistant */}
-        <div className="w-full md:max-w-lg flex flex-col gap-6">
-          {/* Calculator and Riesgo País side by side on larger screens */}
-          <div className="flex flex-col lg:flex-row gap-4">
-            {/* Calculator */}
-            <div className="flex-1">
-              <Calculator rates={rates} />
-            </div>
-            
-            {/* Riesgo País - to the right of calculator */}
-            <div className="lg:w-80">
-              <RiesgoPaisCard riesgoPais={riesgoPais} />
-            </div>
-          </div>
+        {/* Middle Column: Calculator + AI Assistant */}
+        <div className="w-full md:max-w-md flex flex-col gap-6">
+          {/* Calculator */}
+          <Calculator rates={rates} />
 
-          {/* AI Assistant Window - SECOND */}
+          {/* AI Assistant Window */}
           <Win98Window 
             title="¿Invertir en pesos o en dólares?" 
             icon={<NetIcon />}
@@ -418,6 +408,11 @@ export default function HomeClient({ initialRates, initialHistoricalData, initia
               </div>
             </div>
           </Win98Window>
+        </div>
+
+        {/* Right Column: Riesgo País */}
+        <div className="w-full md:w-72 flex-shrink-0">
+          <RiesgoPaisCard riesgoPais={riesgoPais} />
         </div>
 
         {/* FAQ Window */}
