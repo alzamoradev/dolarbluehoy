@@ -3,6 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
+import gfm from 'remark-gfm';
 import { BlogPostMeta, BlogPost } from '@/types';
 
 const BLOG_DIR = path.join(process.cwd(), 'content/blog');
@@ -52,6 +53,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
     
     // Convertir markdown a HTML
     const processedContent = await remark()
+      .use(gfm)
       .use(html)
       .process(content);
     const contentHtml = processedContent.toString();

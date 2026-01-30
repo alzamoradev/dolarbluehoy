@@ -180,11 +180,10 @@ export default async function BlogPostPage({
           </nav>
 
           {/* Article Window */}
-          <Win98Window 
+          <Win98Window
             title={post.title}
             icon={<ArticleIcon />}
             className="w-full max-w-2xl"
-            titleAs="h1"
           >
             <div className="bg-win-gray p-4">
               {/* Article meta */}
