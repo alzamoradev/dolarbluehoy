@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Win98Window } from './RetroUI';
-import { BlogPostMeta } from '@/services/blogService';
+import { BlogPostMeta } from '@/types';
 
 // Icon for the window
 const BookIcon = () => (

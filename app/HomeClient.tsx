@@ -2,9 +2,8 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
-import { HistoricalRate, MarketInsight, AnalysisStatus, RiesgoPais } from '@/types';
+import { HistoricalRate, MarketInsight, AnalysisStatus, RiesgoPais, BlogPostMeta } from '@/types';
 import { DolarRateWithVariation } from '@/services/dolarService';
-import { BlogPostMeta } from '@/services/blogService';
 import { Win98Window, Win98Button, Win98Panel } from '@/components/RetroUI';
 import { DollarCard, getDollarDisplayName } from '@/components/DollarCard';
 import { HistoryChart } from '@/components/HistoryChart';

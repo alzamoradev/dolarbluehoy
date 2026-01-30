@@ -40,3 +40,18 @@ export interface RiesgoPais {
   variacion: string;
   tendencia: 'up' | 'down' | 'neutral';
 }
+
+// Blog types
+export interface BlogPostMeta {
+  slug: string;
+  title: string;
+  description: string;
+  date: string;
+  author: string;
+  tags: string[];
+  image?: string;
+}
+
+export interface BlogPost extends BlogPostMeta {
+  content: string; // HTML content
+}

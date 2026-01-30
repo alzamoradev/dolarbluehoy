@@ -3,21 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
-
-// Tipos para el blog
-export interface BlogPostMeta {
-  slug: string;
-  title: string;
-  description: string;
-  date: string;
-  author: string;
-  tags: string[];
-  image?: string;
-}
-
-export interface BlogPost extends BlogPostMeta {
-  content: string; // HTML content
-}
+import { BlogPostMeta, BlogPost } from '@/types';
 
 const BLOG_DIR = path.join(process.cwd(), 'content/blog');
 
