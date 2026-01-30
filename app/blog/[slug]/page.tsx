@@ -184,6 +184,7 @@ export default async function BlogPostPage({
             title={post.title}
             icon={<ArticleIcon />}
             className="w-full max-w-2xl"
+            titleAs="span"
           >
             <div className="bg-win-gray p-4">
               {/* Article meta */}
