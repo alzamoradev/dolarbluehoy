@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next';
+import { getAllPostsMeta } from '@/services/blogService';
 
 // ISR: Regenerar el sitemap cada 60 segundos
 // Esto asegura que Google siempre vea una fecha reciente
@@ -35,20 +36,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Obtener la fecha de la última actualización de cotizaciones
   const lastModified = await getLastUpdateDate();
   
+  // Obtener todos los artículos del blog
+  const blogPosts = getAllPostsMeta();
+  
+  // URLs del blog
+  const blogUrls: MetadataRoute.Sitemap = blogPosts.map(post => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: new Date(post.date),
+    changeFrequency: 'weekly',
+    priority: 0.7,
+  }));
+  
   return [
+    // Homepage - cotizaciones en tiempo real
     {
       url: baseUrl,
       lastModified,
       changeFrequency: 'hourly',
       priority: 1,
     },
-    // Podés agregar más URLs aquí si agregás páginas en el futuro
-    // {
-    //   url: `${baseUrl}/historico`,
-    //   lastModified,
-    //   changeFrequency: 'daily',
-    //   priority: 0.8,
-    // },
+    // Página del blog (listado)
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: blogPosts.length > 0 ? new Date(blogPosts[0].date) : new Date(),
+      changeFrequency: 'daily',
+      priority: 0.8,
+    },
+    // Artículos individuales del blog
+    ...blogUrls,
   ];
 }
 

@@ -4,12 +4,14 @@ import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { HistoricalRate, MarketInsight, AnalysisStatus, RiesgoPais } from '@/types';
 import { DolarRateWithVariation } from '@/services/dolarService';
+import { BlogPostMeta } from '@/services/blogService';
 import { Win98Window, Win98Button, Win98Panel } from '@/components/RetroUI';
 import { DollarCard, getDollarDisplayName } from '@/components/DollarCard';
 import { HistoryChart } from '@/components/HistoryChart';
 import { Calculator } from '@/components/Calculator';
 import { RiesgoPaisCard } from '@/components/RiesgoPaisCard';
 import { Minesweeper } from '@/components/Minesweeper';
+import { WikidolarWidget } from '@/components/WikidolarWidget';
 import { analyzeMarket } from '@/services/geminiService';
 
 // --- SVG Icons ---
@@ -114,9 +116,10 @@ interface HomeClientProps {
   initialRates: DolarRateWithVariation[];
   initialHistoricalData: HistoricalRate[];
   initialRiesgoPais: RiesgoPais | null;
+  latestPosts: BlogPostMeta[];
 }
 
-export default function HomeClient({ initialRates, initialHistoricalData, initialRiesgoPais }: HomeClientProps) {
+export default function HomeClient({ initialRates, initialHistoricalData, initialRiesgoPais, latestPosts }: HomeClientProps) {
   const [rates] = useState<DolarRateWithVariation[]>(initialRates);
   const [historicalData] = useState<HistoricalRate[]>(initialHistoricalData);
   const [riesgoPais] = useState<RiesgoPais | null>(initialRiesgoPais);
@@ -402,9 +405,10 @@ export default function HomeClient({ initialRates, initialHistoricalData, initia
           </Win98Window>
         </div>
 
-        {/* Right Column: Riesgo País */}
-        <div className="w-full md:w-72 flex-shrink-0">
+        {/* Right Column: Riesgo País + Wikidólar */}
+        <div className="w-full md:w-72 flex-shrink-0 flex flex-col gap-4">
           <RiesgoPaisCard riesgoPais={riesgoPais} />
+          <WikidolarWidget posts={latestPosts} />
         </div>
 
         {/* FAQ Window */}
