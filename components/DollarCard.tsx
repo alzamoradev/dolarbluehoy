@@ -15,6 +15,17 @@ const nameMap: Record<string, string> = {
   'cripto': 'Dólar Cripto',
 };
 
+// Descripciones cortas para SEO y thin content
+const descriptionMap: Record<string, string> = {
+  'blue': 'Cotización del mercado paralelo o informal. Se opera en cuevas y casas de cambio no reguladas.',
+  'oficial': 'Tipo de cambio del Banco Central (BCRA). Usado para operaciones bancarias y comercio exterior.',
+  'bolsa': 'Dólar MEP o Bolsa: Se obtiene comprando y vendiendo bonos en pesos y dólares. 100% legal.',
+  'contadoconliqui': 'Contado con Liquidación: Similar al MEP pero permite transferir dólares al exterior.',
+  'tarjeta': 'Tipo de cambio para consumos en el exterior con tarjeta. Incluye impuestos y percepciones.',
+  'cripto': 'Cotización del dólar en exchanges de criptomonedas. Se opera con USDT, USDC u otras stablecoins.',
+  'mayorista': 'Tipo de cambio para grandes operaciones entre bancos y empresas.',
+};
+
 export function getDollarDisplayName(casa: string, nombre: string): string {
   return nameMap[casa] || nombre;
 }
@@ -26,6 +37,7 @@ export const DollarCard: React.FC<Props> = ({ rate }) => {
 
   const baseName = getDollarDisplayName(rate.casa, rate.nombre);
   const displayName = `Valor ${baseName} Hoy`;
+  const shortDescription = descriptionMap[rate.casa] || '';
   
   // Check if it's "tarjeta" - only show venta
   const isTarjeta = rate.casa === 'tarjeta';
@@ -92,6 +104,12 @@ export const DollarCard: React.FC<Props> = ({ rate }) => {
           </>
         )}
       </Win98Panel>
+      {/* Descripción corta para SEO - thin content */}
+      {shortDescription && (
+        <p className="text-[11px] text-gray-600 font-retro leading-tight mt-1 px-1">
+          {shortDescription}
+        </p>
+      )}
       <div className="text-[10px] text-right text-gray-600 font-retro">
         <time dateTime={rate.fechaActualizacion}>Act: {formattedDate}hs</time>
       </div>
