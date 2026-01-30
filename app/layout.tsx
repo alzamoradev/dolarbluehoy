@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
+import AutoRefresh from '@/components/AutoRefresh';
 import './globals.css';
 
 // Static metadata - dynamic content will be in page.tsx
@@ -67,6 +68,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/favicon.png" />
       </head>
       <body className="min-h-screen font-sans">
+        <AutoRefresh />
         {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-BJ9E0PN4WV"
