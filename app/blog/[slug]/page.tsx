@@ -68,6 +68,18 @@ const HomeIcon = () => (
   </svg>
 );
 
+const DollarIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+    <path d="M8 1v1H6v2h2v1H5v2h3v2H5v2h3v1H6v2h2v1h2v-1h2v-2h-2v-1h3v-2H8V8h3V6H8V5h2V3H8V1H8z" />
+  </svg>
+);
+
+const ChartIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+    <path d="M1 14h14v1H1v-1zm1-3h2v3H2v-3zm3-2h2v5H5V9zm3-4h2v9H8V5zm3 2h2v7h-2V7z" />
+  </svg>
+);
+
 export default async function BlogPostPage({ 
   params 
 }: { 
@@ -182,9 +194,9 @@ export default async function BlogPostPage({
       <div className="min-h-screen flex flex-col font-sans select-none overflow-hidden text-sm">
         {/* Main content */}
         <main className="flex-1 p-4 flex flex-col items-center gap-6 overflow-y-auto pb-16">
-          
+
           {/* Navigation buttons */}
-          <nav className="w-full max-w-2xl flex items-center gap-2" aria-label="Navegación">
+          <nav className="w-full max-w-4xl flex items-center gap-2" aria-label="Navegación">
             <Link href="/">
               <Win98Button className="flex items-center gap-2">
                 <HomeIcon />
@@ -199,67 +211,120 @@ export default async function BlogPostPage({
             </Link>
           </nav>
 
-          {/* Article Window */}
-          <Win98Window
-            title={post.title}
-            icon={<ArticleIcon />}
-            className="w-full max-w-2xl"
-            titleAs="span"
-          >
-            <div className="bg-win-gray p-4">
-              {/* Article meta */}
-              <div className="flex flex-wrap items-center gap-2 mb-4 pb-3 border-b-2 border-gray-400">
-                <time className="text-xs text-gray-600 font-retro">
-                  {formatDate(post.date)}
-                </time>
-                <span className="text-gray-400">•</span>
-                <span className="text-xs text-gray-600 font-retro">
-                  Por {post.author}
-                </span>
-                <div className="flex gap-1 ml-auto">
-                  {post.tags.map(tag => (
-                    <span 
-                      key={tag}
-                      className="text-[10px] bg-win-teal text-white px-2 py-0.5 font-retro"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+          {/* Content wrapper with sidebar */}
+          <div className="w-full max-w-4xl flex flex-col lg:flex-row gap-4">
+            {/* Article Window */}
+            <Win98Window
+              title={post.title}
+              icon={<ArticleIcon />}
+              className="w-full lg:flex-1"
+              titleAs="span"
+            >
+              <div className="bg-win-gray p-4">
+                {/* Article meta */}
+                <div className="flex flex-wrap items-center gap-2 mb-4 pb-3 border-b-2 border-gray-400">
+                  <time className="text-xs text-gray-600 font-retro">
+                    {formatDate(post.date)}
+                  </time>
+                  <span className="text-gray-400">•</span>
+                  <span className="text-xs text-gray-600 font-retro">
+                    Por {post.author}
+                  </span>
+                  <div className="flex gap-1 ml-auto">
+                    {post.tags.map(tag => (
+                      <span
+                        key={tag}
+                        className="text-[10px] bg-win-teal text-white px-2 py-0.5 font-retro"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Article content */}
+                <article
+                  className="prose prose-sm max-w-none bg-white border-2 p-4 font-retro
+                    prose-headings:font-retro prose-headings:text-win-blue
+                    prose-h2:text-lg prose-h2:mt-6 prose-h2:mb-3
+                    prose-h3:text-base prose-h3:mt-4 prose-h3:mb-2
+                    prose-p:text-gray-800 prose-p:leading-relaxed prose-p:mb-3
+                    prose-strong:text-win-blue
+                    prose-a:text-blue-800 prose-a:underline
+                    prose-ul:my-2 prose-ul:pl-4
+                    prose-ol:my-2 prose-ol:pl-4
+                    prose-li:my-1
+                    prose-table:border-collapse prose-table:w-full
+                    prose-th:bg-win-gray prose-th:border prose-th:border-gray-400 prose-th:p-2 prose-th:text-left
+                    prose-td:border prose-td:border-gray-300 prose-td:p-2
+                    prose-hr:my-6 prose-hr:border-gray-300
+                    prose-blockquote:border-l-4 prose-blockquote:border-win-teal prose-blockquote:pl-4 prose-blockquote:italic"
+                  style={{ borderColor: '#000 #fff #fff #000' }}
+                  dangerouslySetInnerHTML={{ __html: post.content }}
+                />
+
+                {/* Back to blog */}
+                <div className="mt-6 flex justify-center">
+                  <Link href="/blog">
+                    <Win98Button className="flex items-center gap-2">
+                      <BackIcon />
+                      <span>Volver a Wikidólar</span>
+                    </Win98Button>
+                  </Link>
                 </div>
               </div>
+            </Win98Window>
 
-              {/* Article content */}
-              <article 
-                className="prose prose-sm max-w-none bg-white border-2 p-4 font-retro
-                  prose-headings:font-retro prose-headings:text-win-blue
-                  prose-h2:text-lg prose-h2:mt-6 prose-h2:mb-3
-                  prose-h3:text-base prose-h3:mt-4 prose-h3:mb-2
-                  prose-p:text-gray-800 prose-p:leading-relaxed prose-p:mb-3
-                  prose-strong:text-win-blue
-                  prose-a:text-blue-800 prose-a:underline
-                  prose-ul:my-2 prose-ul:pl-4
-                  prose-ol:my-2 prose-ol:pl-4
-                  prose-li:my-1
-                  prose-table:border-collapse prose-table:w-full
-                  prose-th:bg-win-gray prose-th:border prose-th:border-gray-400 prose-th:p-2 prose-th:text-left
-                  prose-td:border prose-td:border-gray-300 prose-td:p-2
-                  prose-hr:my-6 prose-hr:border-gray-300
-                  prose-blockquote:border-l-4 prose-blockquote:border-win-teal prose-blockquote:pl-4 prose-blockquote:italic"
-                style={{ borderColor: '#000 #fff #fff #000' }}
-                dangerouslySetInnerHTML={{ __html: post.content }}
-              />
+            {/* Sidebar - Cotizaciones CTA */}
+            <aside className="w-full lg:w-64 flex-shrink-0">
+              <Link href="/" className="block">
+                <div
+                  className="bg-win-gray border-2 p-1 shadow-xl hover:translate-y-[-2px] transition-transform cursor-pointer"
+                  style={{
+                    borderTopColor: '#fff',
+                    borderLeftColor: '#fff',
+                    borderRightColor: '#000',
+                    borderBottomColor: '#000',
+                    boxShadow: '4px 4px 0px rgba(0,0,0,0.5)'
+                  }}
+                >
+                  {/* Title Bar */}
+                  <div className="bg-win-teal px-2 py-1 flex items-center gap-2 mb-1">
+                    <DollarIcon />
+                    <span className="text-white font-bold text-xs font-retro">Cotizaciones</span>
+                  </div>
 
-              {/* Back to blog */}
-              <div className="mt-6 flex justify-center">
-                <Link href="/blog">
-                  <Win98Button className="flex items-center gap-2">
-                    <BackIcon />
-                    <span>Volver a Wikidólar</span>
-                  </Win98Button>
-                </Link>
-              </div>
-            </div>
-          </Win98Window>
+                  {/* Content */}
+                  <div className="bg-win-gray p-3">
+                    <div
+                      className="bg-white border-2 p-3 text-center"
+                      style={{ borderColor: '#000 #fff #fff #000' }}
+                    >
+                      <div className="flex justify-center mb-2">
+                        <ChartIcon />
+                      </div>
+                      <p className="font-retro text-xs text-gray-800 mb-2">
+                        Seguí las cotizaciones del <strong className="text-win-blue">Dólar</strong> y <strong className="text-win-blue">Riesgo País</strong>
+                      </p>
+                      <p className="font-retro text-[10px] text-gray-600 mb-3">
+                        Blue, Oficial, MEP, CCL, Tarjeta y Cripto actualizados en tiempo real
+                      </p>
+                      <div
+                        className="bg-win-gray px-3 py-1 text-xs font-retro inline-block"
+                        style={{
+                          borderWidth: '2px',
+                          borderStyle: 'solid',
+                          borderColor: '#fff #000 #000 #fff'
+                        }}
+                      >
+                        Ver cotizaciones
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </aside>
+          </div>
         </main>
 
         {/* Simple footer */}
