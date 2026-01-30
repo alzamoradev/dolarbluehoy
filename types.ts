@@ -52,6 +52,12 @@ export interface BlogPostMeta {
   image?: string;
 }
 
+export interface FAQ {
+  question: string;
+  answer: string;
+}
+
 export interface BlogPost extends BlogPostMeta {
   content: string; // HTML content
+  faqs: FAQ[]; // Auto-extracted FAQs
 }

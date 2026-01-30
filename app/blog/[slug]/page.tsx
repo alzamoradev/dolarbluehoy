@@ -148,6 +148,20 @@ export default async function BlogPostPage({
     ]
   };
 
+  // FAQ JSON-LD (solo si hay FAQs detectadas)
+  const faqJsonLd = post.faqs.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": post.faqs.map(faq => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer
+      }
+    }))
+  } : null;
+
   return (
     <>
       <script
@@ -158,7 +172,13 @@ export default async function BlogPostPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
+
       <div className="min-h-screen flex flex-col font-sans select-none overflow-hidden text-sm">
         {/* Main content */}
         <main className="flex-1 p-4 flex flex-col items-center gap-6 overflow-y-auto pb-16">
