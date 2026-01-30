@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { fetchDollarRates, DolarRateWithVariation } from '@/services/dolarService';
 import { fetchHistoricalRates } from '@/services/historyService';
 import { fetchRiesgoPais, RiesgoPais } from '@/services/riesgoPaisService';
-import { getLatestPosts } from '@/services/blogService';
+import { getAllPostsMeta } from '@/services/blogService';
 import { getDollarDisplayName } from '@/components/DollarCard';
 import { DolarRate } from '@/types';
 import HomeClient from './HomeClient';
@@ -320,8 +320,8 @@ export default async function Home() {
     fetchRiesgoPais()
   ]);
 
-  // Get latest blog posts for Wikidólar widget
-  const latestPosts = getLatestPosts(3);
+  // Get all blog posts for Wikidólar widget (sorted by date, newest first)
+  const latestPosts = getAllPostsMeta();
 
   // Sort rates by priority
   const order = ['blue', 'oficial', 'bolsa', 'contadoconliqui', 'cripto', 'tarjeta'];
