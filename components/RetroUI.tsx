@@ -8,7 +8,7 @@ interface WindowProps {
   icon?: React.ReactNode;
   onClose?: () => void;
   className?: string;
-  titleAs?: 'h2' | 'span'; // SEO: permite usar h2 para títulos importantes
+  titleAs?: 'h1' | 'h2' | 'span'; // SEO: h1 para título principal, h2 para secciones
 }
 
 export const Win98Window: React.FC<WindowProps> = ({ title, children, icon, onClose, className = '', titleAs = 'h2' }) => {

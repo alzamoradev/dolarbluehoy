@@ -20,18 +20,23 @@ export async function generateMetadata(): Promise<Metadata> {
   const oficialRate = rates.find(r => r.casa === 'oficial');
   const mepRate = rates.find(r => r.casa === 'bolsa');
   
-  const dateOptions: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-  const todayString = new Date().toLocaleDateString('es-AR', dateOptions);
+  // Fecha corta para meta title (max 60-65 chars)
+  const shortDateOptions: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'short' };
+  const shortDate = new Date().toLocaleDateString('es-AR', shortDateOptions);
   
-  // Include riesgo país in title if available
-  const riesgoText = riesgoPais ? ` | Riesgo País ${riesgoPais.valor}` : '';
+  // Fecha larga para description
+  const longDateOptions: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+  const longDate = new Date().toLocaleDateString('es-AR', longDateOptions);
   
+  // Meta title optimizado: ~60 caracteres, keyword al inicio, día visible
+  // Ejemplo: "Dólar Blue $1475 - Hoy viernes 30 ene | Argentina"
   const title = blueRate 
-    ? `Dólar Blue $${blueRate.venta} | Oficial $${oficialRate?.venta} | MEP $${mepRate?.venta}${riesgoText} - Hoy ${todayString}`
+    ? `Dólar Blue $${blueRate.venta} - Hoy ${shortDate} | Argentina`
     : 'Dólar Blue Hoy - Cotización en Tiempo Real Argentina';
   
+  // Meta description: puede ser más larga (~155 chars), incluye todos los datos
   const description = blueRate
-    ? `💵 Cotización ${todayString}: Dólar Blue $${blueRate.venta} | Oficial $${oficialRate?.venta} | MEP $${mepRate?.venta}${riesgoPais ? ` | Riesgo País ${riesgoPais.valor} puntos (${riesgoPais.variacion})` : ''}. Todos los tipos de dólar en Argentina actualizados. Calculadora y gráficos.`
+    ? `💵 Cotización ${longDate}: Dólar Blue $${blueRate.venta} | Oficial $${oficialRate?.venta} | MEP $${mepRate?.venta}${riesgoPais ? ` | Riesgo País ${riesgoPais.valor}` : ''}. Calculadora y gráficos históricos.`
     : 'Cotización del Dólar Blue, Oficial, MEP, CCL y Cripto en Argentina. Valores actualizados de compra y venta.';
 
   return {

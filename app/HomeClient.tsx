@@ -228,19 +228,13 @@ export default function HomeClient({ initialRates, initialHistoricalData, initia
     return [...dynamic, ...riesgoPaisFaq, ...statics];
   }, [rates, riesgoPais]);
 
-  // Generate H1 with all dollar types and riesgo país
+  // Generate H1 - Visible en el título de la ventana Win98
+  // Formato: "Dólar Blue Hoy viernes 30 de enero"
   const h1Text = useMemo(() => {
-    const blueRate = rates.find(r => r.casa === 'blue');
-    const oficialRate = rates.find(r => r.casa === 'oficial');
-    const mepRate = rates.find(r => r.casa === 'bolsa');
-    
-    const riesgoText = riesgoPais ? ` | Riesgo País ${riesgoPais.valor}` : '';
-    
-    if (blueRate && oficialRate && mepRate) {
-      return `Dólar Blue $${blueRate.venta} | Oficial $${oficialRate.venta} | MEP $${mepRate.venta}${riesgoText} - Cotización Hoy`;
-    }
-    return 'Cotización Dólar Blue, Oficial, MEP, CCL y Cripto Hoy Argentina';
-  }, [rates, riesgoPais]);
+    const dateOptions: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' };
+    const todayString = new Date().toLocaleDateString('es-AR', dateOptions);
+    return `Dólar Blue Hoy ${todayString}`;
+  }, []);
 
   // Desktop Icons Component (reusable for desktop and mobile)
   const DesktopIcons = ({ isMobile = false }: { isMobile?: boolean }) => (
@@ -313,15 +307,13 @@ export default function HomeClient({ initialRates, initialHistoricalData, initia
 
   return (
     <div className="min-h-screen flex flex-col font-sans select-none overflow-hidden text-sm">
-      {/* SEO H1 - Visually hidden but accessible */}
-      <h1 className="sr-only">{h1Text}</h1>
-      
       {/* Desktop Area */}
       <main className="flex-1 p-4 relative flex flex-col md:flex-row gap-6 overflow-y-auto pb-16" id="cotizaciones">
         
-        {/* Main Rates Window */}
+        {/* Main Rates Window - H1 visible en el título de la ventana */}
         <Win98Window 
-          title="Cotizaciones del Dólar Hoy" 
+          title={h1Text}
+          titleAs="h1"
           icon={<ComputerIcon />} 
           className="w-full md:max-w-md z-10 h-fit"
         >
