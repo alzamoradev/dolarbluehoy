@@ -60,7 +60,10 @@ IMPORTANTE: Respondé SOLO con JSON válido, sin markdown, sin backticks, sin ex
     const response = await result.response;
     const text = response.text();
     
-    console.log("Gemini raw response:", text);
+    // Debug log only in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log("Gemini raw response:", text);
+    }
     
     // Try to parse JSON from response
     const jsonMatch = text.match(/\{[\s\S]*?\}/);
